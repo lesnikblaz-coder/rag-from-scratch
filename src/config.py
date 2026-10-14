@@ -2,17 +2,27 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 from pathlib import Path
 
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=BASE_DIR / ".env")
+    model_config = SettingsConfigDict(
+        env_file=BASE_DIR / ".env",
+        extra="ignore",
+    )
 
+    # vector database
     RAG_DB_USER: str
     RAG_DB_PASSWORD: str
     RAG_DB_HOST: str
     RAG_DB_PORT: str
     RAG_DB_NAME: str
+
+    # API keys
+    GEMINI_API_KEY: str
+
+    # LLM MODELS
+    EMBEDDING_MODEL: str = "gemini-embedding-001"
 
 
     @property
