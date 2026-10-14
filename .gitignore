@@ -1,0 +1,19 @@
+# Virtual environments
+venv/
+rag_from_scratch/.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Environment variables
+rag_from_scratch/.env
+.env
+.env.test
+
+# Local notes
+ideas.txt
+
+# Local experiments
+rag_from_scratch/experiments/
+experiments/
