@@ -1,0 +1,382 @@
+Northstar Labs — Employee Handbook
+
+Document ID: NL-HB-2026-001
+Version: 1.2
+Effective Date: January 1, 2026
+Last Reviewed: September 15, 2026
+Document Owner: People Operations
+Classification: Internal
+Status: Active
+
+1. Company Overview
+
+Northstar Labs is a fictional software company headquartered in Slovenia. Founded in 2021, the company develops workflow automation software for small and medium-sized businesses.
+
+The company's primary product, OrbitDesk, helps teams manage tasks, automate repetitive processes, and monitor project progress. OrbitDesk supports integrations with email platforms, calendars, customer relationship management systems, and cloud storage providers.
+
+Northstar Labs has 48 employees distributed across Slovenia, Austria, and Germany.
+
+Company Mission
+
+Northstar Labs aims to make business operations simpler through reliable, accessible, and secure software.
+
+Company Values
+Clarity: Communicate decisions and expectations explicitly.
+Ownership: Take responsibility for assigned work and its outcomes.
+Reliability: Deliver consistent results and protect customer trust.
+Curiosity: Experiment, learn, and improve existing processes.
+Respect: Treat colleagues, customers, and partners professionally.
+2. Departments and Responsibilities
+
+Northstar Labs has five primary departments.
+
+2.1 Engineering
+
+The Engineering department develops, tests, deploys, and maintains OrbitDesk.
+
+The department consists of 18 employees and is led by the Director of Engineering, Maya Novak.
+
+Engineering is responsible for code reviews, production reliability, software architecture, and technical documentation.
+
+2.2 Product
+
+The Product department defines product strategy, prioritizes features, and maintains the product roadmap.
+
+The department has 6 employees and is led by Product Manager Leon Fischer.
+
+Product managers collect customer feedback and collaborate with Engineering and Customer Success to define requirements.
+
+2.3 Customer Success
+
+Customer Success helps customers configure OrbitDesk, resolve usage problems, and adopt new features.
+
+The department has 10 employees and is led by Customer Success Manager Sara Weiss.
+
+Customer Success handles general product questions and onboarding. It does not independently approve refunds above €500.
+
+2.4 Sales and Marketing
+
+Sales and Marketing manages lead generation, customer acquisition, partnerships, and commercial communications.
+
+The department has 8 employees and is led by Commercial Director Tomas Kral.
+
+Sales representatives may offer discounts of up to 10% on standard annual subscriptions. Discounts exceeding 10% require written approval from the Commercial Director.
+
+2.5 People and Operations
+
+People and Operations manages recruitment, employee records, workplace policies, payroll coordination, and office administration.
+
+The department has 6 employees and is led by People Operations Manager Elena Berger.
+
+People Operations maintains the authoritative copy of this handbook.
+
+3. Working Hours and Remote Work
+3.1 Standard Working Hours
+
+The standard full-time workweek is 40 hours, normally distributed across five working days.
+
+Employees may arrange their daily schedules with their managers, subject to team coverage requirements and applicable employment agreements.
+
+The company's preferred collaboration hours are 10:00–15:00 Central European local time, Monday through Friday.
+
+Collaboration hours are intended to support meetings and teamwork. They do not automatically require employees to work outside their agreed schedules.
+
+3.2 Remote Work Policy
+
+Employees may work remotely for up to three days per week without additional approval.
+
+Working remotely for four or five days per week requires written approval from the employee's department head.
+
+Employees must use company-approved devices and secure authentication when accessing internal systems remotely.
+
+Remote employees must protect confidential information from unauthorized viewing or access. Public Wi-Fi may only be used with the company's approved secure connection.
+
+3.3 Office Attendance
+
+The Ljubljana office is located at Trg Inovacij 12, Ljubljana. The address is fictional.
+
+Employees attending the office should reserve a desk through the internal booking system.
+
+Office attendance requirements may vary by department. Managers must communicate any team-specific requirements in writing.
+
+4. Leave and Absence
+4.1 Annual Leave
+
+Full-time employees receive 25 working days of annual leave per calendar year under the company's standard policy, subject to their employment agreements and applicable law.
+
+Employees should submit annual leave requests at least 10 calendar days before the intended start date.
+
+Managers should respond within three business days.
+
+Leave is considered approved only after the manager confirms approval in the leave management system.
+
+4.2 Sick Leave
+
+Employees who cannot work due to illness must notify their manager as soon as reasonably possible, preferably before their scheduled start time.
+
+Employees must follow applicable legal requirements and company procedures for documenting sick leave.
+
+Medical information must only be shared through approved confidential channels and with authorized personnel.
+
+4.3 Parental Leave
+
+Parental leave entitlements are governed by applicable law and the employee's employment agreement.
+
+Employees should contact People Operations for information about eligibility, documentation, and leave planning.
+
+This handbook does not replace statutory entitlements or individual employment agreements.
+
+5. Compensation and Benefits
+5.1 Payroll
+
+Salaries are paid on the last business day of each month.
+
+If the last calendar day falls on a weekend or public holiday, payroll is processed on the preceding business day.
+
+Employees should report payroll discrepancies to People Operations within five business days of discovering them.
+
+5.2 Equipment Allowance
+
+Employees may claim up to €600 per calendar year for approved home-office equipment.
+
+Eligible purchases include monitors, keyboards, ergonomic chairs, and laptop stands.
+
+The allowance does not cover personal entertainment devices, gaming consoles, or household furniture unrelated to work.
+
+Employees must submit an itemized receipt and a short business justification through the expense system.
+
+Reimbursement requires manager approval and is normally processed within 15 business days.
+
+Unused equipment allowance does not carry over to the following calendar year.
+
+5.3 Learning Budget
+
+Each employee receives an annual learning budget of €800.
+
+Eligible expenses include professional courses, technical certifications, industry conferences, and job-related books.
+
+Expenses above €300 require approval before purchase.
+
+The learning budget is separate from the home-office equipment allowance. An employee who spends €600 on approved office equipment still retains the full €800 learning budget, subject to the relevant rules.
+
+Unused learning funds expire at the end of the calendar year.
+
+6. Information Security
+6.1 Passwords and Authentication
+
+Employees must use the company's approved password manager and enable multifactor authentication on all supported company accounts.
+
+Passwords must not be shared through email, chat, or documents.
+
+Suspected account compromise must be reported to Security Operations immediately.
+
+6.2 Data Classification
+
+Northstar Labs classifies information into three categories.
+
+Public: Information approved for public release, such as published marketing materials.
+
+Internal: Information intended for employees and authorized contractors, such as internal meeting notes and operational procedures.
+
+Confidential: Sensitive business, employee, financial, or customer information requiring restricted access.
+
+Confidential information must only be shared with explicitly authorized recipients through approved systems.
+
+Employees must not upload confidential customer data into unapproved third-party AI services.
+
+6.3 Security Incident Reporting
+
+Employees must report suspected phishing, lost company devices, accidental data disclosure, and unauthorized account access to Security Operations.
+
+The internal incident reporting channel is security@northstarlabs.example.
+
+The security team acknowledges reports within four business hours during normal business operations.
+
+Employees should not investigate suspected incidents independently if doing so could expose additional information or interfere with containment.
+
+6.4 Device Management
+
+Company laptops must use full-disk encryption, automatic screen locking, and supported operating system versions.
+
+Employees must not disable security software or install unapproved administrative tools.
+
+Lost or stolen devices must be reported immediately, even if the device appears to be protected by a password.
+
+7. Software Development and Deployment
+7.1 Code Review
+
+All production code changes require at least one approval from another qualified engineer.
+
+Changes involving authentication, authorization, payment processing, or customer data handling require two independent approvals.
+
+Authors must not approve their own changes.
+
+7.2 Deployment Schedule
+
+Routine production deployments are scheduled from Tuesday through Thursday, between 10:00 and 15:00 Central European local time.
+
+Emergency security fixes may be deployed outside this window with approval from the on-call engineering lead.
+
+Every production deployment must have a documented rollback plan and appropriate monitoring.
+
+7.3 Incident Severity
+
+Engineering uses three incident severity levels.
+
+SEV-1: A major outage or confirmed critical security incident affecting multiple customers. The on-call engineering lead must be notified immediately.
+SEV-2: Significant functionality is unavailable or degraded for a subset of customers. The responsible engineering team must acknowledge the incident within 30 minutes.
+SEV-3: A minor defect with an available workaround. The issue is handled through the normal engineering backlog.
+
+SEV-1 incidents require a written post-incident review within five business days after service restoration.
+
+The purpose of the review is to identify contributing factors, document lessons, and assign corrective actions rather than assign personal blame.
+
+8. Customer Support and Refunds
+8.1 Support Response Targets
+
+Customer Success aims to meet the following initial response targets during business hours.
+
+Priority	Description	Initial Response Target
+P1	Service unavailable for many customers	30 minutes
+P2	Major feature impaired	4 business hours
+P3	Standard question or minor issue	1 business day
+P4	General feedback or feature request	3 business days
+
+These targets describe initial responses, not guaranteed resolution times.
+
+8.2 Refund Approval
+
+Customer Success representatives may approve refunds of up to €500 per customer, provided the request complies with the applicable refund policy.
+
+Refunds above €500 require approval from the Finance Manager.
+
+Refunds above €2,000 require both Finance Manager and Chief Operating Officer approval.
+
+Approval thresholds are based on the total refund amount for a single customer request, not on individual transactions created to process the same request.
+
+8.3 Customer Data Requests
+
+Requests to access, correct, export, or delete customer personal data must be forwarded to the designated privacy contact.
+
+Customer Success employees must not promise a deletion deadline before the request has been reviewed.
+
+The privacy contact verifies the request, determines applicable obligations, and coordinates the response.
+
+9. Purchasing and Business Expenses
+9.1 Purchase Approval
+
+Employees may make routine business purchases up to €250 per transaction with manager approval.
+
+Purchases between €251 and €2,000 require department head approval.
+
+Purchases above €2,000 require Finance Manager approval and a documented business justification.
+
+Purchases must not be split into smaller transactions to avoid approval thresholds.
+
+These thresholds apply to ordinary purchases and do not replace any separate security, procurement, or legal review requirements.
+
+9.2 Travel Expenses
+
+Employees must obtain manager approval before booking business travel.
+
+The standard hotel reimbursement limit is €180 per night, excluding taxes where applicable.
+
+Exceptions require department head approval before booking.
+
+Reasonable public transportation expenses are reimbursable when supported by receipts.
+
+Personal entertainment, minibar purchases, and expenses incurred by accompanying family members are not reimbursable.
+
+9.3 Expense Submission
+
+Expense claims must be submitted within 30 calendar days after the expense occurs.
+
+Each claim must include a receipt, transaction date, amount, currency, and business purpose.
+
+Incomplete claims may be returned for correction.
+
+10. Acceptable Use of AI Tools
+
+Employees may use company-approved AI tools to draft internal documents, summarize non-confidential information, and assist with software development.
+
+AI-generated outputs must be reviewed by an employee before they are used for customer communications, production code, financial decisions, or employment decisions.
+
+Employees must not submit confidential information, authentication secrets, or identifiable customer records to unapproved AI services.
+
+AI tools must not be treated as authoritative sources for company policies, legal obligations, or customer commitments.
+
+Where an AI-generated answer conflicts with an approved company document, the approved company document takes precedence.
+
+11. Workplace Conduct
+
+Employees must communicate professionally and treat colleagues with respect.
+
+Harassment, discrimination, threats, and deliberate misuse of company systems are prohibited.
+
+Employees may report workplace concerns to People Operations or their department head.
+
+If a concern involves the department head, employees may report it directly to People Operations.
+
+Reports will be handled as confidentially as reasonably possible. Information may be shared with authorized individuals when necessary to investigate or address the concern.
+
+Retaliation against an employee who raises a concern in good faith is prohibited.
+
+12. Policy Exceptions
+
+Policy exceptions must be documented in writing and approved by the person or department authorized to grant the exception.
+
+A manager's informal verbal agreement does not override a policy that explicitly requires written approval.
+
+Exceptions must specify the affected policy, the reason for the exception, the approving person, and any expiration date.
+
+No exception may override applicable law or a mandatory security requirement.
+
+13. Handbook Maintenance
+
+People Operations owns this handbook and is responsible for maintaining its authoritative version.
+
+Department heads may propose changes to policies within their areas of responsibility.
+
+Policy changes become effective only after approval and publication by People Operations, unless a different effective date is explicitly stated.
+
+Employees are responsible for reviewing published policy updates relevant to their work.
+
+Questions about interpretation should be directed to People Operations.
+
+14. Frequently Asked Questions
+
+Q: How many annual leave days does a full-time employee receive?
+
+A: The standard policy provides 25 working days per calendar year, subject to the employment agreement and applicable law.
+
+Q: Can an employee work remotely five days a week?
+
+A: Yes, with written approval from the employee's department head.
+
+Q: What is the annual learning budget?
+
+A: €800 per employee. Expenses above €300 require prior approval.
+
+Q: Who approves a €750 customer refund?
+
+A: The Finance Manager, because refunds above €500 exceed the Customer Success approval limit.
+
+Q: Who approves a €2,500 business purchase?
+
+A: The Finance Manager, together with a documented business justification.
+
+Q: When may emergency production deployments occur?
+
+A: Outside the normal Tuesday-to-Thursday deployment window when an emergency security fix is approved by the on-call engineering lead.
+
+Q: Which team owns the authoritative handbook?
+
+A: People Operations.
+
+Q: May employees upload confidential customer data to any AI assistant?
+
+A: No. Confidential customer data may only be processed using approved systems and in accordance with company security policies.
+
+End of Document
+
+Northstar Labs and all people, products, policies, addresses, and contact details described in this handbook are fictional and intended for software testing.
