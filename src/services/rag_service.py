@@ -6,6 +6,7 @@ from src.db.base import AsyncSessionLocal
 from src.prompts.rag import build_rag_prompt, RAG_SYSTEM_INSTRUCTION
 from src.config import settings
 from src.schemas import ai
+from src.logging_config import logger
 
 
 # responsible for coordinating the complete question-answering process
@@ -23,6 +24,8 @@ class RAGService:
                 query_embedding
             )
 
+            logger.debug("CHUNKS=\n%s", [c for c in chunks])
+
         if not chunks:
             return ai.AIInteractionResponse(
                 answer="",
@@ -30,6 +33,8 @@ class RAGService:
             )
 
         rag_prompt = build_rag_prompt(question, chunks)
+
+        logger.debug("RAG_PROMPT=%s", rag_prompt)
 
         interaction = self.client.interactions.create(
             model=settings.INTERACTION_MODEL,
