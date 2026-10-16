@@ -1,15 +1,16 @@
 from google import genai
+from google.genai.client import AsyncClient
 
 from src.config import settings
 from src import enums
 
 
 class EmbeddingService:
-    def __init__(self, client: genai.Client):
+    def __init__(self, client: AsyncClient):
         self.client = client
 
     async def embed_documents(self, documents: list[str]) -> list[list[float]]:
-        response = self.client.models.embed_content(
+        response = await self.client.models.embed_content(
             model=settings.EMBEDDING_MODEL,
             contents=documents,
             config=genai.types.EmbedContentConfig(
@@ -21,7 +22,7 @@ class EmbeddingService:
         return [embedding.values for embedding in response.embeddings]
 
     async def embed_query(self, query: str) -> list[float]:
-        response = self.client.models.embed_content(
+        response = await self.client.models.embed_content(
             model=settings.EMBEDDING_MODEL,
             contents=query,
             config=genai.types.EmbedContentConfig(

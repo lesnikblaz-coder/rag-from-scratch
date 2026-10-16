@@ -1,4 +1,4 @@
-from google import genai
+from google.genai.client import AsyncClient
 
 from src.services.embedding_service import EmbeddingService
 from src.repos.chunk_repo import ChunkRepo
@@ -11,11 +11,11 @@ from src.logging_config import logger
 
 # responsible for coordinating the complete question-answering process
 class RAGService:
-    def __init__(self, service: EmbeddingService, client: genai.Client):
+    def __init__(self, service: EmbeddingService, client: AsyncClient):
         self.embedding_service = service
         self.client = client
 
-    async def ask(self, question: str) -> ai.AIInteractionResponse:
+    async def ask(self, question: str) -> ai.AIResponseAndSource:
         query_embedding = await self.embedding_service.embed_query(question)
 
         async with AsyncSessionLocal() as session:
@@ -27,16 +27,25 @@ class RAGService:
             logger.debug("CHUNKS=\n%s", [c for c in chunks])
 
         if not chunks:
-            return ai.AIInteractionResponse(
+            return ai.AIResponseAndSource(
                 answer="",
                 sources=[]
             )
+
+        sources = [
+            ai.Source(
+                source_file=chunk["source_file"],
+                chunk_index=chunk["chunk_index"],
+                similarity=float(chunk["similarity"]),
+            )
+            for chunk in chunks
+        ]
 
         rag_prompt = build_rag_prompt(question, chunks)
 
         logger.debug("RAG_PROMPT=%s", rag_prompt)
 
-        interaction = self.client.interactions.create(
+        interaction = await self.client.interactions.create(
             model=settings.INTERACTION_MODEL,
             system_instruction=RAG_SYSTEM_INSTRUCTION,
             input=rag_prompt,
@@ -47,4 +56,11 @@ class RAGService:
             },
         )
 
-        return ai.AIInteractionResponse.model_validate_json(interaction.output_text)
+        llm_response = ai.AIInteractionResponse.model_validate_json(
+            interaction.output_text
+        )
+
+        return ai.AIResponseAndSource(
+            answer=llm_response.answer,
+            sources=sources
+        )

@@ -14,12 +14,12 @@ DOCUMENT_PATH = Path(__file__).resolve().parent.parent / "sample.txt"
 
 
 async def main():
-    client = genai.Client(
+    aclient = genai.Client(
         api_key=settings.GEMINI_API_KEY
-    )
+    ).aio
 
     try:
-        embedding_service = EmbeddingService(client)
+        embedding_service = EmbeddingService(aclient)
 
         # load document
         text = load_text_file(DOCUMENT_PATH)
@@ -54,7 +54,7 @@ async def main():
         print("Document successfully ingested!")
 
     finally:
-        await client.aio.aclose()
+        await aclient.aclose()
         await async_engine.dispose()
 
 

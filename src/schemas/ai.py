@@ -8,4 +8,7 @@ class Source(BaseModel):
 
 class AIInteractionResponse(BaseModel):
     answer: str
+
+class AIResponseAndSource(BaseModel):
+    answer: str
     sources: list[Source]

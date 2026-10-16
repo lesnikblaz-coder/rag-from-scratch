@@ -9,13 +9,13 @@ from src.db.base import async_engine
 
 
 async def main():
-    client = genai.Client(
+    aclient = genai.Client(
         api_key=settings.GEMINI_API_KEY
-    )
+    ).aio
 
     try:
-        embedding_service = EmbeddingService(client)
-        rag_service = RAGService(embedding_service, client)
+        embedding_service = EmbeddingService(aclient)
+        rag_service = RAGService(embedding_service, aclient)
 
         question: str = "How many vacation days do employees receive?" # input("Question: ")
 
@@ -26,7 +26,7 @@ async def main():
         print("SOURCES:", response.sources)
 
     finally:
-        await client.aio.aclose()
+        await aclient.aclose()
         await async_engine.dispose()
 
 if __name__ == "__main__":

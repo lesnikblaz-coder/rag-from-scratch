@@ -10,12 +10,12 @@ from src.services.embedding_service import EmbeddingService
 QUERY: str = input("Query: ")
 
 async def main():
-    client = genai.Client(
+    aclient = genai.Client(
         api_key=settings.GEMINI_API_KEY
-    )
+    ).aio
 
     try:
-        embedding_service = EmbeddingService(client)
+        embedding_service = EmbeddingService(aclient)
 
         # generate query embedding
         query_embedding = await embedding_service.embed_query(QUERY)
@@ -32,7 +32,7 @@ async def main():
         print(results)
 
     finally:
-        await client.aio.aclose()
+        await aclient.aclose()
         await async_engine.dispose()
 
 
