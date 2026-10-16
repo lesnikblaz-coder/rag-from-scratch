@@ -18,7 +18,7 @@ class RAGService:
     async def ask(self, question: str) -> ai.AIInteractionResponse:
         query_embedding = await self.embedding_service.embed_query(question)
 
-        async with AsyncSessionLocal.begin() as session:
+        async with AsyncSessionLocal() as session:
             chunk_repo = ChunkRepo(session)
             chunks = await chunk_repo.search_similar(
                 query_embedding
