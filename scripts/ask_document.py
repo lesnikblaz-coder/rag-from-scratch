@@ -35,8 +35,8 @@ if __name__ == "__main__":
 
 """
 QUESTION: How many vacation days do employees receive?
-ANSWER: Full-time employees receive 25 working days of annual leave per calendar year under the company's standard policy, subject to their employment agreements and applicable law [1].
-SOURCES: [Source(source_file='sample.txt', chunk_index=4, similarity=1.0)]
+ANSWER: Full-time employees receive 25 working days of annual leave per calendar year, subject to their individual employment agreements and applicable law [1].
+SOURCES: [Source(source_file='sample.txt', chunk_index=4, similarity=0.6802954163852718)]
 """
 
 """
