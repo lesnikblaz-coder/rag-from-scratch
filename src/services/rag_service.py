@@ -15,7 +15,7 @@ class RAGService:
         self.embedding_service = service
         self.client = client
 
-    async def ask(self, question: str) -> ai.AIResponseAndSource:
+    async def ask(self, question: str, min_similarity: float = 0.60) -> ai.AIResponseAndSource:
         query_embedding = await self.embedding_service.embed_query(question)
 
         async with AsyncSessionLocal() as session:
@@ -32,16 +32,27 @@ class RAGService:
                 sources=[]
             )
 
+        relevant_chunks = [c for c in chunks if c["similarity"] >= min_similarity]
+
+        if not relevant_chunks:
+            return ai.AIResponseAndSource(
+                answer=(
+                    "I couldn't find the answer in the provided documents. "
+                    "Try rephrasing your question."
+                ),
+                sources=[]
+            )
+
         sources = [
             ai.Source(
-                source_file=chunk["source_file"],
-                chunk_index=chunk["chunk_index"],
-                similarity=float(chunk["similarity"]),
+                source_file=c["source_file"],
+                chunk_index=c["chunk_index"],
+                similarity=float(c["similarity"]),
             )
-            for chunk in chunks
+            for c in relevant_chunks
         ]
 
-        rag_prompt = build_rag_prompt(question, chunks)
+        rag_prompt = build_rag_prompt(question, relevant_chunks)
 
         logger.debug("RAG_PROMPT=%s", rag_prompt)
 
