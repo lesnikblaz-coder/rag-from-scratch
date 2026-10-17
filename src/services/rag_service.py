@@ -7,6 +7,7 @@ from src.prompts.rag import build_rag_prompt, RAG_SYSTEM_INSTRUCTION
 from src.config import settings
 from src.schemas import ai
 from src.logging_config import logger
+from src.services.fusion import reciprocal_rank_fusion
 
 
 # responsible for coordinating the complete question-answering process
@@ -20,21 +21,16 @@ class RAGService:
 
         async with AsyncSessionLocal() as session:
             chunk_repo = ChunkRepo(session)
-            chunks = await chunk_repo.search_similar(
+            semantic_chunks = await chunk_repo.search_similar(
                 query_embedding
             )
 
-            logger.debug("CHUNKS=\n%s", [c for c in chunks])
+            keyword_chunks = await chunk_repo.search_keyword(question)
 
-        if not chunks:
-            return ai.AIResponseAndSource(
-                answer="",
-                sources=[]
-            )
+            logger.debug("semantic_chunks=\n%s", [ss_c for ss_c in semantic_chunks])
+            logger.debug("keyword_chunks=\n%s", [sk_c for sk_c in keyword_chunks])
 
-        relevant_chunks = [c for c in chunks if c["similarity"] >= min_similarity]
-
-        if not relevant_chunks:
+        if not semantic_chunks and not keyword_chunks:
             return ai.AIResponseAndSource(
                 answer=(
                     "I couldn't find the answer in the provided documents. "
@@ -43,16 +39,36 @@ class RAGService:
                 sources=[]
             )
 
+        relevant_semantic_chunks = [
+            c for c in semantic_chunks
+            if c["similarity"] >= min_similarity
+        ]
+
+        if not relevant_semantic_chunks and not keyword_chunks:
+            return ai.AIResponseAndSource(
+                answer=(
+                    "I couldn't find the answer in the provided documents. "
+                    "Try rephrasing your question."
+                ),
+                sources=[]
+            )
+
+        fused_chunks = reciprocal_rank_fusion(
+            semantic_results=relevant_semantic_chunks,
+            keyword_results=keyword_chunks
+        )[:3]
+
         sources = [
             ai.Source(
                 source_file=c["source_file"],
                 chunk_index=c["chunk_index"],
-                similarity=float(c["similarity"]),
+                similarity=c.get("similarity"),
+                rrf_score=c["rrf_score"]
             )
-            for c in relevant_chunks
+            for c in fused_chunks
         ]
 
-        rag_prompt = build_rag_prompt(question, relevant_chunks)
+        rag_prompt = build_rag_prompt(question, fused_chunks)
 
         logger.debug("RAG_PROMPT=%s", rag_prompt)
 

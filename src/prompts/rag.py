@@ -32,7 +32,8 @@ def build_rag_prompt(question: str, chunks: list[dict]) -> str:
         f"[{i}]\n"
         f"Source: {c['source_file']}\n"
         f"Chunk: {c['chunk_index']}\n"
-        f"Similarity: {c['similarity']}\n"
+        f"Similarity: {c.get('similarity')}\n"
+        f"RRF score: {c['rrf_score']}\n"
         f"Content: {c['content']}"
         for i, c in enumerate(chunks, start=1)
     )
