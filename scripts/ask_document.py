@@ -3,9 +3,10 @@ import asyncio
 from google import genai
 
 from src.config import settings
+from src.db.base import async_engine
 from src.services.embedding_service import EmbeddingService
 from src.services.rag_service import RAGService
-from src.db.base import async_engine
+from src.services.retrieval_service import RetrievalService
 
 
 async def main():
@@ -15,9 +16,10 @@ async def main():
 
     try:
         embedding_service = EmbeddingService(aclient)
-        rag_service = RAGService(embedding_service, aclient)
+        retrieval_service = RetrievalService(embedding_service)
+        rag_service = RAGService(retrieval_service, aclient)
 
-        question: str = "How many vacation days do employees receive?" # input("Question: ")
+        question: str = "How many vacation days do employees receive?"  # input("Question: ")
 
         response = await rag_service.ask(question)
 
@@ -29,9 +31,9 @@ async def main():
         await aclient.aclose()
         await async_engine.dispose()
 
+
 if __name__ == "__main__":
     asyncio.run(main())
-
 
 """
 QUESTION: How many vacation days do employees receive?
