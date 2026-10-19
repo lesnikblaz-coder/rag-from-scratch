@@ -1,7 +1,7 @@
 from google.genai.client import AsyncClient
 
 from src.services.retrieval_service import RetrievalService
-from src.prompts.rag import build_rag_prompt, RAG_SYSTEM_INSTRUCTION
+from src.agent.prompts.rag import build_rag_prompt, RAG_SYSTEM_INSTRUCTION
 from src.config import settings
 from src.schemas import ai
 from src.logging_config import logger
