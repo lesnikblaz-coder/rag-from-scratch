@@ -26,6 +26,7 @@ class DocumentAgent:
 
         search_queries = []
         tool_call_count = 0
+        evidence_found = False
 
         for iteration in range(settings.MAX_AGENT_TOOL_ITERATIONS + 1):
 
@@ -35,16 +36,22 @@ class DocumentAgent:
             ]
 
             if not function_calls:
+                if not evidence_found:
+                    return ai.AIAgentInteractionResponse(
+                        answer="I couldn't find enough information in the documents to answer your question.",
+                        search_queries=search_queries
+                    )
+
                 return ai.AIAgentInteractionResponse(
                     answer=interaction.output_text,
                     search_queries=search_queries
                 )
 
             if iteration == settings.MAX_AGENT_TOOL_ITERATIONS:
-                raise exc.AIInteractionLimitError("Maximum agent tool iterations reached.")
+                raise exc.AIInteractionLimitError("Maximum ai tool iterations reached.")
 
             if tool_call_count + len(function_calls) > settings.MAX_AGENT_TOOL_CALLS:
-                raise exc.AIInteractionLimitError("Maximum agent tool calls reached.")
+                raise exc.AIInteractionLimitError("Maximum ai tool calls reached.")
 
             function_results = []
 
@@ -57,6 +64,9 @@ class DocumentAgent:
                 result = await self.retrieval_service.search(
                     **arguments.model_dump()
                 )
+
+                if result:
+                    evidence_found = True
 
                 # logger for checkign/validating LLM-generated citations
                 retrieved_chunks = [
@@ -88,4 +98,4 @@ class DocumentAgent:
                 input=function_results
             )
 
-        raise exc.AIInteractionLimitError("Maximum agent tool iterations reached.")
+        raise exc.AIInteractionLimitError("Maximum ai tool iterations reached.")
