@@ -160,3 +160,63 @@ async def test_unknown_tool_call(
     mock_gemini_sdk.interactions.create.assert_awaited_once()
 
     mock_retrieval_service.search.assert_not_awaited()
+
+async def test_no_evidence_returns_fallback(
+        document_agent,
+        mock_gemini_sdk,
+        mock_retrieval_service
+):
+    first_response = SimpleNamespace(
+        id="interaction-1",
+        steps=[
+            SimpleNamespace(
+                type="function_call",
+                name="search",
+                id="call-1",
+                arguments={
+                    "query": "2022 World Cup winner"
+                }
+            )
+        ],
+        output_text=None
+    )
+
+    second_response = SimpleNamespace(
+        id="interaction-2",
+        steps=[],
+        output_text="Argentina won the 2022 World Cup."
+    )
+
+    mock_retrieval_service.search.return_value = []
+
+    mock_gemini_sdk.interactions.create.side_effect = [
+        first_response,
+        second_response
+    ]
+
+    result = await document_agent.ask(
+        question="Who won the 2022 World Cup?"
+    )
+
+    assert result.answer == "I couldn't find enough information in the documents to answer your question."
+    assert result.search_queries == ["2022 World Cup winner"]
+
+async def test_unsupported_document_based_answer(
+        document_agent,
+        mock_gemini_sdk,
+        mock_retrieval_service
+):
+    first_response = SimpleNamespace(
+        id="interaction-1",
+        steps=[],
+        output_text="Unsupported document based answer that makes no sense and I made up!"
+    )
+
+    mock_gemini_sdk.interactions.create.return_value = first_response
+
+    result = await document_agent.ask(
+        "Make up an answer!"
+    )
+
+    assert result.answer == "I couldn't find enough information in the documents to answer your question."
+    assert not result.search_queries
