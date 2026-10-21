@@ -127,8 +127,8 @@ async def test_sequential_retrieval(
     parsed_result_1 = json.loads(function_result_1[0]["result"][0]["text"])
     parsed_result_2 = json.loads(function_result_2[0]["result"][0]["text"])
 
-    assert parsed_result_1[0]["content"] == "Employees receive 25 annual leave days."
-    assert parsed_result_2[0]["content"] == "Employees must notify their manager when sick."
+    assert parsed_result_1["matches"][0]["content"] == "Employees receive 25 annual leave days."
+    assert parsed_result_2["matches"][1]["content"] == "Employees must notify their manager when sick."
 
 async def test_unknown_tool_call(
         document_agent,
