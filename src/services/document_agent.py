@@ -2,13 +2,13 @@ import json
 
 from google.genai.client import AsyncClient
 
-from src.services.retrieval_service import RetrievalService
-from src.config import settings
 from src.agent.prompts.agent import AGENT_SYSTEM_INSTRUCTION
 from src.agent.tools import definitions as df
-from src.schemas import ai
+from src.config import settings
 from src.exceptions import custom as exc
+from src.schemas import ai
 from src.services.citation_validation import validate_citations
+from src.services.retrieval_service import RetrievalService
 
 
 class DocumentAgent:
@@ -29,7 +29,7 @@ class DocumentAgent:
         tool_call_count: int = 0
         evidence_found: bool = False
         evidence_registry: dict[str, dict] = {}
-        matches: list[dict] = []
+        chunk_to_citation: dict[tuple, str] = {}
 
         for iteration in range(settings.MAX_AGENT_TOOL_ITERATIONS + 1):
 
@@ -52,7 +52,7 @@ class DocumentAgent:
                 return ai.AIAgentInteractionResponse(
                     answer=interaction.output_text,
                     search_queries=search_queries,
-                    cited_sources=sorted(cited_sources, key=lambda x: x[1])
+                    cited_sources=cited_sources
                 )
 
             if iteration == settings.MAX_AGENT_TOOL_ITERATIONS:
@@ -73,22 +73,25 @@ class DocumentAgent:
                     **arguments.model_dump()
                 )
 
+                matches: list[dict] = []
+
                 if result:
                     evidence_found = True
-                    start_index = len(evidence_registry) + 1
 
-                    for i, r in enumerate(result, start=start_index):
-                        citation_id = f"S{i}"
-                        evidence_registry[citation_id] = r
+                    for chunk in result:
+                        key = (chunk["source_file"], chunk["chunk_index"])
 
-                        key = (r["source_file"], r["chunk_index"])
-                        for m in matches:
-                            if (m["source_file"], m["chunk_index"]) == key:
-                                m.update(**r)
-                                break
-                        else:  # runs if break is not hit
-                            r["citation_id"] = citation_id
-                            matches.append({**r})
+                        if key not in chunk_to_citation:
+                            citation_id = f"S{len(evidence_registry) + 1}"
+                            chunk_to_citation[key] = citation_id
+
+                        else:
+                            citation_id = chunk_to_citation[key]
+
+                        evidence_registry[citation_id] = chunk
+
+                        chunk["citation_id"] = citation_id
+                        matches.append({**chunk})
 
                 search_queries.append(arguments.query)
                 payload = {"matches": matches}
