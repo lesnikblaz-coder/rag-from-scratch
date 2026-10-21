@@ -1,30 +1,9 @@
 import pytest
 import json
 
-from unittest.mock import AsyncMock, MagicMock
 from types import SimpleNamespace
-from google import genai
 
-from src.services.document_agent import DocumentAgent
-from src.services.retrieval_service import RetrievalService
-
-
-@pytest.fixture
-def mock_gemini_sdk():
-    client = MagicMock(spec=genai.client.AsyncClient)
-    client.interactions.create = AsyncMock()
-    return client
-
-@pytest.fixture
-def mock_retrieval_service():
-    return AsyncMock(spec=RetrievalService)
-
-@pytest.fixture
-def document_agent(mock_gemini_sdk, mock_retrieval_service):
-    return DocumentAgent(
-        client=mock_gemini_sdk,
-        retrieval_service=mock_retrieval_service
-    )
+from src.exceptions import custom as err
 
 
 async def test_sequential_retrieval(
@@ -65,7 +44,7 @@ async def test_sequential_retrieval(
     third_response = SimpleNamespace(
         id="interaction-3",
         steps=[],
-        output_text="final answer"
+        output_text="final answer [S1]"
     )
 
     mock_retrieval_service.search.side_effect = [
@@ -95,7 +74,7 @@ async def test_sequential_retrieval(
         question="What is the leave policy?"
     )
 
-    assert result.answer == "final answer"
+    assert result.answer == "final answer [S1]"
     assert result.search_queries == [
         "annual leave policy",
         "sick leave policy"
@@ -128,7 +107,7 @@ async def test_sequential_retrieval(
     parsed_result_2 = json.loads(function_result_2[0]["result"][0]["text"])
 
     assert parsed_result_1["matches"][0]["content"] == "Employees receive 25 annual leave days."
-    assert parsed_result_2["matches"][1]["content"] == "Employees must notify their manager when sick."
+    assert parsed_result_2["matches"][0]["content"] == "Employees must notify their manager when sick."
 
 async def test_unknown_tool_call(
         document_agent,
@@ -220,3 +199,72 @@ async def test_unsupported_document_based_answer(
 
     assert result.answer == "I couldn't find enough information in the documents to answer your question."
     assert not result.search_queries
+
+async def test_two_tool_calls_one_interaction(
+        document_agent,
+        mock_gemini_sdk,
+        mock_retrieval_service
+):
+    first_response = SimpleNamespace(
+        id="interaction-1",
+        steps=[
+            SimpleNamespace(
+                type="function_call",
+                name="search",
+                id="call-1",
+                arguments={
+                    "query": "annual leave"
+                }
+            ),
+            SimpleNamespace(
+                type="function_call",
+                name="search",
+                id="call-2",
+                arguments={
+                    "query": "sick leave"
+                }
+            )
+        ],
+        output_text=None
+    )
+
+    second_response = SimpleNamespace(
+        id="interaction-2",
+        steps=[],
+        output_text="asd"
+    )
+
+    mock_gemini_sdk.interactions.create.side_effect = [
+        first_response,
+        second_response
+    ]
+
+    mock_retrieval_service.search.side_effect = [
+        [
+            {
+                "source_file": "handbook.txt",
+                "chunk_index": 4,
+                "content": "Employees receive 25 annual leave days."
+            }
+        ],
+        [
+            {
+                "source_file": "handbook.txt",
+                "chunk_index": 5,
+                "content": "Employees must notify their manager when sick."
+            }
+        ]
+    ]
+
+    with pytest.raises(err.InvalidCitationError):
+        await document_agent.ask("compare annual leave with sick leave")
+
+    second_interaction = mock_gemini_sdk.interactions.create.call_args_list[1]
+
+    second_interaction_input = second_interaction.kwargs["input"]
+
+    second_interaction_input_first = json.loads(second_interaction_input[0]["result"][0]["text"])
+    second_interaction_input_second = json.loads(second_interaction_input[1]["result"][0]["text"])
+
+    assert second_interaction_input_first["matches"][0]["citation_id"] == "S1"
+    assert second_interaction_input_second["matches"][0]["citation_id"] == "S2"
