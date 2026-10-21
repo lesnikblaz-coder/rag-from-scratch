@@ -8,7 +8,7 @@ from src.agent.prompts.agent import AGENT_SYSTEM_INSTRUCTION
 from src.agent.tools import definitions as df
 from src.schemas import ai
 from src.exceptions import custom as exc
-from src.logging_config import logger
+from src.services.citation_validation import validate_citations
 
 
 class DocumentAgent:
@@ -22,11 +22,14 @@ class DocumentAgent:
             system_instruction=AGENT_SYSTEM_INSTRUCTION,
             input=question,
             tools=[df.SEARCH_DOCUMENT],
+            generation_config={"thinking_level": "minimal"}
         )
 
         search_queries = []
-        tool_call_count = 0
-        evidence_found = False
+        tool_call_count: int = 0
+        evidence_found: bool = False
+        evidence_registry: dict[str, dict] = {}
+        matches: list[dict] = []
 
         for iteration in range(settings.MAX_AGENT_TOOL_ITERATIONS + 1):
 
@@ -39,12 +42,17 @@ class DocumentAgent:
                 if not evidence_found:
                     return ai.AIAgentInteractionResponse(
                         answer="I couldn't find enough information in the documents to answer your question.",
-                        search_queries=search_queries
+                        search_queries=search_queries,
+                        cited_sources=[]
                     )
+
+                # validate citations -> raises error if invalid
+                cited_sources = validate_citations(interaction.output_text, evidence_registry)
 
                 return ai.AIAgentInteractionResponse(
                     answer=interaction.output_text,
-                    search_queries=search_queries
+                    search_queries=search_queries,
+                    cited_sources=sorted(cited_sources, key=lambda x: x[1])
                 )
 
             if iteration == settings.MAX_AGENT_TOOL_ITERATIONS:
@@ -67,16 +75,23 @@ class DocumentAgent:
 
                 if result:
                     evidence_found = True
+                    start_index = len(evidence_registry) + 1
 
-                # logger for checkign/validating LLM-generated citations
-                retrieved_chunks = [
-                    (chunk["source_file"], chunk["chunk_index"])
-                    for chunk in result
-                ]
-                logger.info("retrieved_chunks = %s", retrieved_chunks)
-                #
+                    for i, r in enumerate(result, start=start_index):
+                        citation_id = f"S{i}"
+                        evidence_registry[citation_id] = r
+
+                        key = (r["source_file"], r["chunk_index"])
+                        for m in matches:
+                            if (m["source_file"], m["chunk_index"]) == key:
+                                m.update(**r)
+                                break
+                        else:  # runs if break is not hit
+                            r["citation_id"] = citation_id
+                            matches.append({**r})
 
                 search_queries.append(arguments.query)
+                payload = {"matches": matches}
 
                 function_results.append({
                     "type": "function_result",
@@ -84,7 +99,7 @@ class DocumentAgent:
                     "call_id": step.id,
                     "result": [{
                         "type": "text",
-                        "text": json.dumps(result, default=str)
+                        "text": json.dumps(payload, default=str)
                     }]
                 })
 
@@ -95,7 +110,8 @@ class DocumentAgent:
                 system_instruction=AGENT_SYSTEM_INSTRUCTION,
                 tools=[df.SEARCH_DOCUMENT],
                 previous_interaction_id=interaction.id,
-                input=function_results
+                input=function_results,
+                generation_config={"thinking_level": "minimal"}
             )
 
         raise exc.AIInteractionLimitError("Maximum ai tool iterations reached.")

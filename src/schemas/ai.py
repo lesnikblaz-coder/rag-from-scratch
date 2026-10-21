@@ -17,6 +17,7 @@ class AIResponseAndSource(BaseModel):
 class AIAgentInteractionResponse(BaseModel):
     answer: str | None
     search_queries: list[str]
+    cited_sources: list[str]
 
 
 # function calling restrictions
