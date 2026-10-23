@@ -12,35 +12,39 @@ async def main():
         api_key=settings.GEMINI_API_KEY
     ).aio
 
-    evaluator = GroundedEvaluator(aclient)
+    try:
+        evaluator = GroundedEvaluator(aclient)
 
-    correct = 0
+        correct = 0
 
-    for gc in GROUNDING_CASES:
-        evaluation = await evaluator.evaluate(
-            claim=gc["claim"],
-            evidence=gc["evidence"]
-        )
+        for gc in GROUNDING_CASES:
+            evaluation = await evaluator.evaluate(
+                claim=gc["claim"],
+                evidence=gc["evidence"]
+            )
 
-        hit = evaluation.label == gc["expected_label"]
+            hit = evaluation.label == gc["expected_label"]
 
-        if hit:
-            correct += 1
+            if hit:
+                correct += 1
 
-        print(gc["id"])
-        print("Claim: ", gc['claim'])
-        print("Expected: ", gc['expected_label'])
-        print("Predicted: ", evaluation.label)
-        print("Result: ", "PASS" if hit else "FAIL", "\n")
+            print(gc["id"])
+            print("Claim: ", gc['claim'])
+            print("Expected: ", gc['expected_label'])
+            print("Predicted: ", evaluation.label)
+            print("Result: ", "PASS" if hit else "FAIL", "\n")
 
 
-    accuracy = (correct / len(GROUNDING_CASES)) * 100
+        accuracy = (correct / len(GROUNDING_CASES)) * 100
 
-    print("\n================================")
-    print(f"TOTAL CASES: {len(GROUNDING_CASES)}")
-    print(f"CORRECT: {correct}")
-    print(f"ACCURACY: {accuracy}%")
-    print("================================")
+        print("\n================================")
+        print(f"TOTAL CASES: {len(GROUNDING_CASES)}")
+        print(f"CORRECT: {correct}")
+        print(f"ACCURACY: {accuracy}%")
+        print("================================")
+
+    finally:
+        await aclient.aclose()
 
 if __name__ == "__main__":
     asyncio.run(main())
