@@ -7,3 +7,8 @@ class EmbeddingTaskTypes(StrEnum):
 
 class EmbeddingDimensions(IntEnum):
     OUTPUT_DIM = 768
+
+class GroundingLabel(StrEnum):
+    SUPPORTED = "supported"
+    CONTRADICTED = "contradicted"
+    INSUFFICIENT_EVIDENCE = "insufficient_evidence"
