@@ -32,6 +32,7 @@ async def main():
             print("Claim: ", gc['claim'])
             print("Expected: ", gc['expected_label'])
             print("Predicted: ", evaluation.label)
+            print("Reasoning: ", evaluation.reasoning)
             print("Result: ", "PASS" if hit else "FAIL", "\n")
 
 
