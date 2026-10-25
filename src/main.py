@@ -19,7 +19,7 @@ async def lifespan(_app: FastAPI):
         yield
     finally:
         await aclient.aclose()
-        await async_engine.disopse()
+        await async_engine.dispose()
 
 
 app = FastAPI(lifespan=lifespan)
