@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from src.config import settings
 from src.db.base import async_engine
 from src.api.routes.health import router as health
+from src.api.routes.rag import router as rag
 
 
 @asynccontextmanager
@@ -26,3 +27,4 @@ app = FastAPI(lifespan=lifespan)
 
 
 app.include_router(health)
+app.include_router(rag)
