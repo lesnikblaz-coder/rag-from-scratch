@@ -62,3 +62,35 @@ class RAGService:
             answer=llm_response.answer,
             sources=sources
         )
+
+    async def ask_stream(self, question: str, limit: int = 5, min_similarity: float = 0.60):
+        chunks = await self.retrieval_service.search(
+            query=question,
+            limit=limit,
+            min_similarity=min_similarity
+        )
+
+        if not chunks:
+            yield "I couldn't find the answer in the provided documents. Try rephrasing your question."
+            return
+
+        rag_prompt = build_rag_prompt(question, chunks)
+
+        logger.info("Built RAG prompt for question=%s", question)
+
+        stream = await self.client.interactions.create(
+            model=settings.INTERACTION_MODEL,
+            system_instruction=RAG_SYSTEM_INSTRUCTION,
+            input=rag_prompt,
+            response_format={
+                "type": "text",
+                "mime_type": "application/json",
+                "schema": ai.AIInteractionResponse.model_json_schema()
+            },
+            stream=True
+        )
+
+        async for event in stream:
+            if event.event_type == "step.delta":
+                if event.delta.type == "text":
+                    yield event.delta.text
