@@ -5,6 +5,7 @@ from collections.abc import AsyncIterable
 from src.schemas import ai
 from src.schemas import api
 from src.api import dependencies as dep
+from src.logging_config import logger
 
 router = APIRouter(prefix="/v1")
 
@@ -19,10 +20,12 @@ async def rag_ask(request: api.AskQuestionRequest, rag_service: dep.RAGServiceDe
 async def rag_stream(request: api.AskQuestionRequest, rag_service: dep.RAGServiceDep) -> AsyncIterable[ServerSentEvent]:
     try:
         async for s in rag_service.ask_stream(request.question):
-            yield ServerSentEvent(data=s, event="token")
+            yield ServerSentEvent(data={"text": s}, event="token")
         yield ServerSentEvent(raw_data="{}", event="done")
 
     except Exception:
+        logger.exception("RAG streaming failed")
+
         yield ServerSentEvent(
             data="An error occurred while generating the answer.",
             event="error"
