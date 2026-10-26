@@ -5,6 +5,7 @@ from src.agent.prompts.rag import build_rag_prompt, RAG_SYSTEM_INSTRUCTION
 from src.config import settings
 from src.schemas import ai
 from src.logging_config import logger
+from src.exceptions import custom as err
 
 
 # responsible for coordinating the complete question-answering process
@@ -82,15 +83,19 @@ class RAGService:
             model=settings.INTERACTION_MODEL,
             system_instruction=RAG_SYSTEM_INSTRUCTION,
             input=rag_prompt,
-            response_format={
-                "type": "text",
-                "mime_type": "application/json",
-                "schema": ai.AIInteractionResponse.model_json_schema()
-            },
             stream=True
         )
+
+        completed = False
 
         async for event in stream:
             if event.event_type == "step.delta":
                 if event.delta.type == "text":
                     yield event.delta.text
+
+            elif event.event_type == "interaction.completed":
+                completed = True
+                logger.info("Interaction stream completed.")
+
+        if not completed:
+            raise err.IncompleteUpstreamError()
