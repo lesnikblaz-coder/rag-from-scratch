@@ -1,31 +1,11 @@
 from typing import Annotated
 from fastapi import Request, Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db.base import AsyncSessionLocal
 from src.services.rag_service import RAGService
 from src.services.document_agent import DocumentAgent
 from src.services.retrieval_service import RetrievalService
 from src.services.embedding_service import EmbeddingService
-
-from src.repos.chunk_repo import ChunkRepo
-
-
-# ---------- SESSION ----------
-async def _get_session():
-    async with AsyncSessionLocal.begin() as session:
-        yield session
-
-SessionDep = Annotated[AsyncSession, Depends(_get_session)]
-
-
-# ---------- REPOSITORIES ----------
-async def _get_chunk_repo(session: SessionDep):
-    return ChunkRepo(
-        session=session
-    )
-
-ChunkRepoDep = Annotated[ChunkRepo, Depends(_get_chunk_repo)]
 
 
 # ---------- SERVICES ----------
@@ -37,10 +17,10 @@ async def _get_embedding_service(request: Request):
 EmbeddingServiceDep = Annotated[EmbeddingService, Depends(_get_embedding_service)]
 
 
-async def _get_retrieval_service(embedding_service: EmbeddingServiceDep, chunk_repo: ChunkRepoDep):
+async def _get_retrieval_service(embedding_service: EmbeddingServiceDep):
     return RetrievalService(
         embedding_service=embedding_service,
-        chunk_repo=chunk_repo
+        session_factory=AsyncSessionLocal
     )
 
 RetrievalServiceDep = Annotated[RetrievalService, Depends(_get_retrieval_service)]
