@@ -7,6 +7,7 @@ from src.db.base import async_engine
 from src.services.embedding_service import EmbeddingService
 from src.services.rag_service import RAGService
 from src.services.retrieval_service import RetrievalService
+from src.db.base import AsyncSessionLocal
 
 
 async def main():
@@ -16,7 +17,7 @@ async def main():
 
     try:
         embedding_service = EmbeddingService(aclient)
-        retrieval_service = RetrievalService(embedding_service)
+        retrieval_service = RetrievalService(embedding_service, AsyncSessionLocal)
         rag_service = RAGService(retrieval_service, aclient)
 
         question: str = input("Question: ") # "Compare our vacation policy with our sick leave policy."
