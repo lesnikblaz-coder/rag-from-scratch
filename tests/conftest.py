@@ -51,3 +51,10 @@ def document_agent(mock_gemini_sdk, mock_retrieval_service):
         client=mock_gemini_sdk,
         retrieval_service=mock_retrieval_service
     )
+
+@pytest.fixture
+def rag_service(mock_retrieval_service, mock_gemini_sdk):
+    return RAGService(
+        retrieval_service=mock_retrieval_service,
+        client=mock_gemini_sdk
+    )
