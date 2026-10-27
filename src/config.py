@@ -30,6 +30,10 @@ class Settings(BaseSettings):
     MAX_AGENT_TOOL_ITERATIONS: int = 5
     MAX_AGENT_TOOL_CALLS: int = 10
 
+    # TIMEOUTS
+    RAG_INTERACTION_TIMEOUT_SECONDS: float = 30.0
+    RAG_STREAM_TIMEOUT_SECONDS: float = 60.0
+
 
     @property
     def rag_database_url(self) -> str:

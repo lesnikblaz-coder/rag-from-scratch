@@ -1,3 +1,5 @@
+import asyncio
+
 from google.genai.client import AsyncClient
 
 from src.services.retrieval_service import RetrievalService
@@ -44,25 +46,26 @@ class RAGService:
 
         logger.info("Built RAG prompt for question=%s", question)
 
-        interaction = await self.client.interactions.create(
-            model=settings.INTERACTION_MODEL,
-            system_instruction=RAG_SYSTEM_INSTRUCTION,
-            input=rag_prompt,
-            response_format={
-                "type": "text",
-                "mime_type": "application/json",
-                "schema": ai.AIInteractionResponse.model_json_schema()
-            },
-        )
+        async with asyncio.timeout(settings.RAG_INTERACTION_TIMEOUT_SECONDS):
+            interaction = await self.client.interactions.create(
+                model=settings.INTERACTION_MODEL,
+                system_instruction=RAG_SYSTEM_INSTRUCTION,
+                input=rag_prompt,
+                response_format={
+                    "type": "text",
+                    "mime_type": "application/json",
+                    "schema": ai.AIInteractionResponse.model_json_schema()
+                },
+            )
 
-        llm_response = ai.AIInteractionResponse.model_validate_json(
-            interaction.output_text
-        )
+            llm_response = ai.AIInteractionResponse.model_validate_json(
+                interaction.output_text
+            )
 
-        return ai.AIResponseAndSource(
-            answer=llm_response.answer,
-            sources=sources
-        )
+            return ai.AIResponseAndSource(
+                answer=llm_response.answer,
+                sources=sources
+            )
 
     async def ask_stream(self, question: str, limit: int = 5, min_similarity: float = 0.60):
         chunks = await self.retrieval_service.search(
@@ -79,23 +82,24 @@ class RAGService:
 
         logger.info("Built RAG prompt for question=%s", question)
 
-        stream = await self.client.interactions.create(
-            model=settings.INTERACTION_MODEL,
-            system_instruction=RAG_SYSTEM_INSTRUCTION,
-            input=rag_prompt,
-            stream=True
-        )
+        async with asyncio.timeout(settings.RAG_STREAM_TIMEOUT_SECONDS):
+            stream = await self.client.interactions.create(
+                model=settings.INTERACTION_MODEL,
+                system_instruction=RAG_SYSTEM_INSTRUCTION,
+                input=rag_prompt,
+                stream=True
+            )
 
-        completed = False
+            completed = False
 
-        async for event in stream:
-            if event.event_type == "step.delta":
-                if event.delta.type == "text":
-                    yield event.delta.text
+            async for event in stream:
+                if event.event_type == "step.delta":
+                    if event.delta.type == "text":
+                        yield event.delta.text
 
-            elif event.event_type == "interaction.completed":
-                completed = event.interaction.status == "completed"
-                logger.info("Interaction stream completed.")
+                elif event.event_type == "interaction.completed":
+                    completed = event.interaction.status == "completed"
+                    logger.info("Interaction stream completed.")
 
-        if not completed:
-            raise err.IncompleteUpstreamError()
+            if not completed:
+                raise err.IncompleteUpstreamError()
