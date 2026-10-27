@@ -94,7 +94,7 @@ class RAGService:
                     yield event.delta.text
 
             elif event.event_type == "interaction.completed":
-                completed = True
+                completed = event.interaction.status == "completed"
                 logger.info("Interaction stream completed.")
 
         if not completed:
