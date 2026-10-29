@@ -34,6 +34,13 @@ class Settings(BaseSettings):
     RAG_INTERACTION_TIMEOUT_SECONDS: float = 30.0
     RAG_STREAM_TIMEOUT_SECONDS: float = 60.0
 
+    # RETRIES
+    API_RETRY_ATTEMPTS: int = 5
+    API_RETRY_INITIAL_DELAY: float = 1
+    API_RETRY_MAX_DELAY: float = 5.0
+    API_RETRY_EXP_BASE: float = 2.0
+    API_RETRY_JITTER: float = 1.0
+
 
     @property
     def rag_database_url(self) -> str:
