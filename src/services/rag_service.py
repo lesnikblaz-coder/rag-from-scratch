@@ -1,4 +1,5 @@
 import asyncio
+import time
 
 from google.genai.client import AsyncClient
 
@@ -44,9 +45,9 @@ class RAGService:
 
         rag_prompt = build_rag_prompt(question, chunks)
 
-        logger.info("Built RAG prompt for question=%s", question)
-
         async with asyncio.timeout(settings.RAG_INTERACTION_TIMEOUT_SECONDS):
+            start = time.perf_counter()
+
             interaction = await self.client.interactions.create(
                 model=settings.INTERACTION_MODEL,
                 system_instruction=RAG_SYSTEM_INSTRUCTION,
@@ -56,6 +57,12 @@ class RAGService:
                     "mime_type": "application/json",
                     "schema": ai.AIInteractionResponse.model_json_schema()
                 },
+            )
+            duration_ms = (time.perf_counter() - start) * 1000
+
+            logger.info(
+                "Gemini generation completed duration_ms=%.2f",
+                duration_ms
             )
 
             llm_response = ai.AIInteractionResponse.model_validate_json(
@@ -80,9 +87,9 @@ class RAGService:
 
         rag_prompt = build_rag_prompt(question, chunks)
 
-        logger.info("Built RAG prompt for question=%s", question)
-
         async with asyncio.timeout(settings.RAG_STREAM_TIMEOUT_SECONDS):
+            start = time.perf_counter()
+
             stream = await self.client.interactions.create(
                 model=settings.INTERACTION_MODEL,
                 system_instruction=RAG_SYSTEM_INSTRUCTION,
@@ -91,15 +98,41 @@ class RAGService:
             )
 
             completed = False
+            first_yield_logged = False
 
             async for event in stream:
                 if event.event_type == "step.delta":
                     if event.delta.type == "text":
+
+                        if not first_yield_logged:
+                            first_yield_duration_ms = (time.perf_counter() - start) * 1000
+
+                            logger.info(
+                                "First yield of stream duration_ms=%.2f",
+                                first_yield_duration_ms
+                            )
+
+                            first_yield_logged = True
+
                         yield event.delta.text
 
                 elif event.event_type == "interaction.completed":
                     completed = event.interaction.status == "completed"
                     logger.info("Interaction stream completed.")
 
+                    finished_stream_duration_ms = (time.perf_counter() - start) * 1000
+
+                    logger.info(
+                        "Finished stream duration_ms=%.2f",
+                        finished_stream_duration_ms
+                    )
+
             if not completed:
+                unfinished_stream_duration_ms = (time.perf_counter() - start) * 1000
+
+                logger.info(
+                    "Unfinished stream duration_ms=%.2f",
+                    unfinished_stream_duration_ms
+                )
+
                 raise err.IncompleteUpstreamError()

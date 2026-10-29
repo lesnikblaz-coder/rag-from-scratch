@@ -1,3 +1,5 @@
+import time
+
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from src.services.embedding_service import EmbeddingService
@@ -17,20 +19,33 @@ class RetrievalService:
         async with self.session_factory() as session:
             repo = ChunkRepo(session)
 
+            start = time.perf_counter()
+
             semantic_chunks = await repo.search_similar(query_embedding, limit)
             keyword_chunks = await repo.search_keyword(query, limit)
 
-        logger.info("Semantic search finished | length=%s", len(semantic_chunks))
-        logger.info("Keyword search finished | length=%s", len(keyword_chunks))
+            duration_ms = (time.perf_counter() - start) * 1000
+            logger.info(
+                "Database (cosine similarity & keyword) retrieval completed duration_ms=%.2f",
+                duration_ms
+            )
 
         relevant_semantic_chunks = [
             c for c in semantic_chunks
             if c["similarity"] >= min_similarity
         ]
 
+        start = time.perf_counter()
+
         fused_chunks = reciprocal_rank_fusion(
             semantic_results=relevant_semantic_chunks,
             keyword_results=keyword_chunks
         )[:3]
+
+        duration_ms = (time.perf_counter() - start) * 1000
+        logger.info(
+            "Chunk fusion completed duration_ms=%.2f",
+            duration_ms
+        )
 
         return fused_chunks
