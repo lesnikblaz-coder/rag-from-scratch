@@ -1,6 +1,7 @@
 import asyncio
 import pytest
 from unittest.mock import AsyncMock
+from types import SimpleNamespace
 
 from src.config import settings
 
@@ -25,14 +26,25 @@ async def test_timeout_stream(
     }]
 
     async def slow_stream():
+        yield SimpleNamespace(
+            event_type="step.delta",
+            delta=SimpleNamespace(
+                type="text",
+                text="Hello"
+            )
+        )
         await asyncio.sleep(1)
         yield
 
     mock_gemini_sdk.interactions.create.return_value = slow_stream()
 
+    received = []
+
     with pytest.raises(TimeoutError):
-        async for _ in rag_service.ask_stream("hello"):
-            pass
+        async for yielded in rag_service.ask_stream("hello"):
+            received.append(yielded)
+
+    assert received == ["Hello"]
 
 async def test_timeout_interaction(
         rag_service,
