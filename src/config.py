@@ -21,6 +21,9 @@ class Settings(BaseSettings):
     # API keys
     GEMINI_API_KEY: str
 
+    # SECRET key
+    API_SECRET: str
+
     # LLM MODELS
     EMBEDDING_MODEL: str = "gemini-embedding-001"
     INTERACTION_MODEL: str = "gemini-3.1-flash-lite"

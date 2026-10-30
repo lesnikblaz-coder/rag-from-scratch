@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.sse import EventSourceResponse, ServerSentEvent
 from collections.abc import AsyncIterable
 
@@ -6,8 +6,12 @@ from src.schemas import ai
 from src.schemas import api
 from src.api import dependencies as dep
 from src.logging_config import logger
+from src.security.api_key import get_api_key
 
-router = APIRouter(prefix="/v1")
+router = APIRouter(
+    prefix="/v1",
+    dependencies=[Depends(get_api_key)]
+)
 
 
 # standard RAG assistant
