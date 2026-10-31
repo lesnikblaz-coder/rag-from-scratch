@@ -25,7 +25,7 @@ async def test_invalid_request(
 ):
     response = await client.post(
         url=BASE_PREFIX + "/rag/ask",
-        json={"question": ""}
+        json={"question": ""},
     )
 
     assert response.status_code == 422
