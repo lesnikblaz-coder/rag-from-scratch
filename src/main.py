@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from google import genai
 from contextlib import asynccontextmanager
+from redis_fastapi import FastAPIRedis
 
 from src.config import settings
 from src.db.base import async_engine
@@ -33,6 +34,8 @@ async def lifespan(_app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+
+FastAPIRedis(app).lifespan().rate_limiting()
 
 
 app.include_router(health)

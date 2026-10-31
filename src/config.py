@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     RAG_DB_PORT: str
     RAG_DB_NAME: str
 
+    # Redis
+    REDIS_URL: str
+
     # API keys
     GEMINI_API_KEY: str
 

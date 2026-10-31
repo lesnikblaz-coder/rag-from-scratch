@@ -10,6 +10,7 @@ services:
     command: uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
     depends_on:
       - db
+      - redis
 
   db:
     image: pgvector/pgvector:0.8.6-pg17
@@ -28,6 +29,9 @@ services:
 
     volumes:
       - rag_pgdata:/var/lib/postgresql/data
+
+  redis:
+    image: redis:8
 
 volumes:
   rag_pgdata:

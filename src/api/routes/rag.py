@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends
 from fastapi.sse import EventSourceResponse, ServerSentEvent
 from collections.abc import AsyncIterable
+from redis_fastapi import rate_limit
 
 from src.schemas import ai
 from src.schemas import api
@@ -10,7 +11,10 @@ from src.security.api_key import get_api_key
 
 router = APIRouter(
     prefix="/v1",
-    dependencies=[Depends(get_api_key)]
+    dependencies=[
+        Depends(get_api_key),
+        Depends(rate_limit(limit=5, window=60))
+    ]
 )
 
 
