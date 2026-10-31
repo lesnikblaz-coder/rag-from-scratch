@@ -13,7 +13,15 @@ router = APIRouter(
     prefix="/v1",
     dependencies=[
         Depends(get_api_key),
-        Depends(rate_limit(limit=5, window=60))
+        Depends(
+            rate_limit(
+                limit=5,
+                window=60,
+                fail_closed=True,
+                scope="ai-api",
+                identifier=lambda request: "private-api"
+            )
+        )
     ]
 )
 
