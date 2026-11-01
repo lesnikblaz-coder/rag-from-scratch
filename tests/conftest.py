@@ -10,6 +10,7 @@ from src.services.rag_service import RAGService
 from src.main import app
 from src.api import dependencies as dep
 from src.security.api_key import get_api_key
+from src.api.routes.rag import rate_limit_dependency
 
 
 @pytest.fixture
@@ -21,11 +22,15 @@ def mock_rag_agent():
     return AsyncMock(spec=DocumentAgent)
 
 @pytest.fixture
-async def client(mock_rag_agent, mock_rag_service):
+async def client(
+        mock_rag_agent,
+        mock_rag_service
+):
 
     app.dependency_overrides[dep._get_rag_service] = lambda: mock_rag_service
     app.dependency_overrides[dep._get_document_agent] = lambda: mock_rag_agent
     app.dependency_overrides[get_api_key] = lambda: "test-api-key"
+    app.dependency_overrides[rate_limit_dependency] = lambda: None
 
     try:
         async with httpx.AsyncClient(
