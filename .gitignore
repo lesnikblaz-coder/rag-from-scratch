@@ -10,7 +10,7 @@ __pycache__/
 # Environment variables
 rag_from_scratch/.env
 .env
-.env.test
+.env.*
 
 # Local notes
 ideas.txt
