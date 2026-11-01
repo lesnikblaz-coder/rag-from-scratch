@@ -9,19 +9,19 @@ from src.api import dependencies as dep
 from src.logging_config import logger
 from src.security.api_key import get_api_key
 
-router = APIRouter(
-    prefix="/v1",
-    dependencies=[
-        Depends(get_api_key),
-        Depends(
-            rate_limit(
+rate_limit_dependency = rate_limit(
                 limit=5,
                 window=60,
                 fail_closed=True,
                 scope="ai-api",
                 identifier=lambda request: "private-api"
             )
-        )
+
+router = APIRouter(
+    prefix="/v1",
+    dependencies=[
+        Depends(get_api_key),
+        Depends(rate_limit_dependency)
     ]
 )
 
