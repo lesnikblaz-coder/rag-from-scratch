@@ -5,8 +5,15 @@ WORKDIR /src
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
+# create a non-root user
+RUN useradd -m appuser
 
-EXPOSE 8000
+# copy app files with correct ownership
+COPY --chown=appuser:appuser . .
 
-CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# run as non-root
+USER appuser
+
+EXPOSE 10000
+
+CMD ["sh", "-c", "uvicorn src.main:app --host 0.0.0.0 --port ${PORT:-10000}"]
