@@ -1,10 +1,11 @@
 # Virtual environments
-venv/
+.venv/
 rag_from_scratch/.venv/
 
 # Python cache
 __pycache__/
 *.pyc
+.pytest_cache/
 
 # Environment variables
 rag_from_scratch/.env
@@ -17,3 +18,5 @@ ideas.txt
 # Local experiments
 rag_from_scratch/experiments/
 experiments/
+
+.git/
