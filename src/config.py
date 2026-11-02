@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     RAG_DB_PORT: str
     RAG_DB_NAME: str
 
+    EXTERNAL_PSQL_CONN: str
+    ASYNC_EXTERNAL_PSQL_CONN: str
+
     # Redis
     REDIS_URL: str
 
