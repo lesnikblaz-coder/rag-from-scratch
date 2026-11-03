@@ -35,12 +35,13 @@ flowchart TD
     Retrieval --> Embed[Gemini embedding API]
     Retrieval --> Search[(PostgreSQL + pgvector + full-text search)]
     Retrieval --> Fusion[Reciprocal Rank Fusion]
-    Fusion --> RAG
-    Fusion --> Stream
+    
+    Embed --> Retrieval
+    Search --> Retrieval
     Fusion --> Agent
+    Fusion --> Gen
+    Fusion --> Gen
 
-    RAG --> Gen[Gemini generation API]
-    Stream --> Gen
     Agent --> Gen
     API --> Redis[(Redis-compatible rate-limit store)]
 ```
