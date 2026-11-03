@@ -31,5 +31,27 @@ jobs:
           python -m pip install -r requirements.txt
           python -m pip install pytest pytest-asyncio
 
+      - name: Validate application configuration
+        run: python -c "from src.config import settings; print('Settings loaded successfully')"
+
       - name: Run tests
         run: python -m pytest -q
+
+env:
+  # Test database configuration
+  RAG_DB_USER: "ci_user"
+  RAG_DB_PASSWORD: "ci_password"
+  RAG_DB_HOST: "127.0.0.1"
+  RAG_DB_PORT: "5432"
+  RAG_DB_NAME: "ci_test_db"
+
+  # Valid PostgreSQL connection strings
+  EXTERNAL_PSQL_CONN: "postgresql://ci_user:ci_password@127.0.0.1:5432/ci_test_db"
+  ASYNC_EXTERNAL_PSQL_CONN: "postgresql+asyncpg://ci_user:ci_password@127.0.0.1:5432/ci_test_db"
+
+  # Redis configuration
+  REDIS_URL: "redis://127.0.0.1:6379/0"
+
+  # Dummy credentials (NOT real secrets)
+  GEMINI_API_KEY: "ci-dummy-gemini-key"
+  API_SECRET: "ci-dummy-api-secret-for-testing"
